@@ -53,7 +53,7 @@ func main() {
 	var comments []Comment
 	Db.Model(&readPost).Related(&comments)
 
-	fmt.Println(comments)
-	fmt.Println(comments[0])
-	fmt.Println(comments[1])
+	for _, comment := range comments {
+		fmt.Println(comment)
+	}
 }
