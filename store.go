@@ -52,7 +52,6 @@ func main() {
 	Db.Where("author = $1", "sau").First(&readPost)
 	var comments []Comment
 	Db.Model(&readPost).Related(&comments)
-
 	for _, comment := range comments {
 		fmt.Println(comment)
 	}
