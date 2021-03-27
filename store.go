@@ -36,22 +36,23 @@ func init() {
 }
 
 func main() {
-	post := Post{Content: "aaa", Author: "sau"}
-	fmt.Println(post)
+	// post := Post{Content: "aaa", Author: "sau"}
+	// fmt.Println(post)
 
-	Db.Create(&post)
-	fmt.Println(post)
+	// Db.Create(&post)
+	// fmt.Println(post)
 
-	comment1 := Comment{Content: "good", Author: "joe"}
-	Db.Model(&post).Association("Comments").Append(comment1)
+	// comment1 := Comment{Content: "good", Author: "joe"}
+	// Db.Model(&post).Association("Comments").Append(comment1)
 
-	comment2 := Comment{Content: "bad", Author: "ma"}
-	Db.Model(&post).Association("Comments").Append(comment2)
+	// comment2 := Comment{Content: "bad", Author: "ma"}
+	// Db.Model(&post).Association("Comments").Append(comment2)
 
 	var readPost Post
 	Db.Where("author = $1", "sau").First(&readPost)
 	var comments []Comment
 	Db.Model(&readPost).Related(&comments)
+
 	fmt.Println(comments)
 	fmt.Println(comments[0])
 	fmt.Println(comments[1])
