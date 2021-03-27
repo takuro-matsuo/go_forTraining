@@ -49,10 +49,8 @@ func main() {
 	Db.Model(&post).Association("Comments").Append(comment2)
 
 	var readPost Post
-	// QueryRow
 	Db.Where("author = $1", "sau").First(&readPost)
 	var comments []Comment
-	// Query
 	Db.Model(&readPost).Related(&comments)
 	fmt.Println(comments)
 	fmt.Println(comments[0])
