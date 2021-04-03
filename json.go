@@ -9,7 +9,8 @@ import (
 )
 
 type Posts struct {
-	Posts []Post `json:"posts"`
+	// Posts []Post `json:"posts"`
+	Posts []Post
 }
 type Post struct {
 	Id       int       `json:"id"`
