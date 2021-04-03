@@ -1,13 +1,16 @@
-// リスト7.10
+// リスト7.11
 package main
 
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 )
 
+type Posts struct {
+	Posts []Post `json:"posts"`
+}
 type Post struct {
 	Id       int       `json:"id"`
 	Content  string    `json:"content"`
@@ -29,33 +32,25 @@ type Comment struct {
 func main() {
 	jsonFile, err := os.Open("post.json")
 	if err != nil {
-		fmt.Println("Error opening JSON file:", err)
+		fmt.Println("Error opening JSON file: ", err)
 		return
 	}
 	defer jsonFile.Close()
-	jsonData, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		fmt.Println("Error reading JSON data:", err)
-		return
+
+	decoder := json.NewDecoder(jsonFile)
+	for {
+		var posts Posts
+		err := decoder.Decode(&posts)
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			fmt.Println("Error decoding JSON data: ", err)
+			return
+		}
+		psts := posts.Posts
+		for _, pst := range psts {
+			fmt.Println(pst)
+		}
 	}
-
-	fmt.Println("---string(jsonData)---")
-	fmt.Println(string(jsonData))
-	var post Post
-	json.Unmarshal(jsonData, &post)
-	fmt.Println("---post.Id---")
-	fmt.Println(post.Id)
-	fmt.Println("---post.Content---")
-	fmt.Println(post.Content)
-	fmt.Println("---post.Author.Id---")
-	fmt.Println(post.Author.Id)
-	fmt.Println("---post.Author.Name---")
-	fmt.Println(post.Author.Name)
-	fmt.Println("---post.Comments[0].Id---")
-	fmt.Println(post.Comments[0].Id)
-	fmt.Println("---post.omments[0].Content---")
-	fmt.Println(post.Comments[0].Content)
-	fmt.Println("---post.Comments[0].Author---")
-	fmt.Println(post.Comments[0].Author)
-
 }
