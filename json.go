@@ -1,17 +1,14 @@
-// リスト7.11
+// リスト7.13
 package main
 
 import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 )
 
-type Posts struct {
-	// Posts []Post `json:"posts"`
-	Posts []Post
-}
 type Post struct {
 	Id       int       `json:"id"`
 	Content  string    `json:"content"`
@@ -31,27 +28,48 @@ type Comment struct {
 }
 
 func main() {
-	jsonFile, err := os.Open("post.json")
+
+	post := Post{
+		Id:      1,
+		Content: "Hello World!",
+		Author: Author{
+			Id:   2,
+			Name: "Sau Sheong",
+		},
+		Comments: []Comment{
+			Comment{
+				Id:      3,
+				Content: "Have a great day!",
+				Author:  "Adam",
+			},
+			Comment{
+				Id:      4,
+				Content: "How are you today?",
+				Author:  "Betty",
+			},
+		},
+	}
+
+	jsonFile, err := os.Create("post.json")
 	if err != nil {
-		fmt.Println("Error opening JSON file: ", err)
+		fmt.Println("Error creating JSON file:", err)
 		return
 	}
-	defer jsonFile.Close()
+	jsonWriter := io.Writer(jsonFile)
+	encoder := json.NewEncoder(jsonWriter)
+	encoder.SetIndent("", "\t\t")
+	err = encoder.Encode(&post)
 
-	decoder := json.NewDecoder(jsonFile)
-	for {
-		var posts Posts
-		err := decoder.Decode(&posts)
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			fmt.Println("Error decoding JSON data: ", err)
-			return
-		}
-		psts := posts.Posts
-		for _, pst := range psts {
-			fmt.Println(pst)
-		}
+	jsonFile, err = os.Open("post.json")
+	if err != nil {
+		fmt.Println("Error opening JSON file:", err)
+		return
 	}
+	jsonData, err := ioutil.ReadAll(jsonFile)
+	if err != nil {
+		fmt.Println("Error reading JSON data:", err)
+		return
+	}
+	fmt.Println(string(jsonData))
+
 }
